@@ -1,0 +1,51 @@
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: python -m app.main
+    environment:
+      ROLE: server
+      DATA_DIR: /data
+      RUNS_DIR: /runs
+      SERVER_ADDR: 0.0.0.0:8080
+      CLIENTS: ${CLIENTS:-2}
+      ROUNDS: ${ROUNDS:-5}
+      LOCAL_EPOCHS: ${LOCAL_EPOCHS:-1}
+      BATCH_SIZE: ${BATCH_SIZE:-256}
+      LR: ${LR:-0.001}
+      SEED: ${SEED:-42}
+      DEVICE: ${DEVICE:-cpu}
+      HIDDEN_SIZE: ${HIDDEN_SIZE:-64}
+      LAYERS: ${LAYERS:-2}
+      IID: ${IID:-true}
+      EXPERIMENT_TAG: ${EXPERIMENT_TAG:-cicids}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../data:/data
+      - ../runs:/runs
+
+  client:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: sh -c "sleep 12 && python -m app.main"
+    depends_on:
+      - server
+    environment:
+      ROLE: client
+      CLIENT_ID: 0
+      DATA_DIR: /data
+      RUNS_DIR: /runs
+      SERVER_ADDR: server:8080
+      LOCAL_EPOCHS: ${LOCAL_EPOCHS:-1}
+      BATCH_SIZE: ${BATCH_SIZE:-256}
+      LR: ${LR:-0.001}
+      SEED: ${SEED:-42}
+      DEVICE: ${DEVICE:-cpu}
+      HIDDEN_SIZE: ${HIDDEN_SIZE:-64}
+      LAYERS: ${LAYERS:-2}
+    volumes:
+      - ../data:/data
+      - ../runs:/runs

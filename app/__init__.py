@@ -1,0 +1,1 @@
+"""Federated IDS app package."""

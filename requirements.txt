@@ -1,0 +1,7 @@
+pandas==2.2.3
+numpy==1.26.4
+scikit-learn==1.5.2
+torch==2.4.1
+flwr==1.11.1
+matplotlib==3.9.2
+joblib==1.4.2
